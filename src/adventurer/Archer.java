@@ -1,25 +1,29 @@
 package adventurer;
 
-import strategy.*;
-import utility.*;
+import strategy.Buster;
+import strategy.FightStrategy;
 
+/*
+ * 冒險者實作類別 - 弓箭手
+ */
 public class Archer implements Adventurer {
 	
+	String type;
 	Ability ability;
 	FightStrategy fightStrategy;
 	
-	public Archer() {
+	public Archer(String type) {
 		
-		this.ability = new Ability(200,400);
+		this.ability = new Ability(1200,1400);
 		ability.setNpName("箭雨");
+		this.type = type;
 		
 	}
 	
 	@Override
 	public String getType() {
 		
-		Conversation.output("Archer here!");
-		return this.getClass().getSimpleName();
+		return type;
 		
 	}
 	

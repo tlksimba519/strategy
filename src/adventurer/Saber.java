@@ -2,25 +2,27 @@ package adventurer;
 
 import strategy.Buster;
 import strategy.FightStrategy;
-import utility.Conversation;
 
+/*
+ * 冒險者實作類別 - 劍士
+ */
 public class Saber implements Adventurer {
 	
+	String type;
 	Ability ability;
 	FightStrategy fightStrategy;
 	
-	public Saber() {
+	public Saber(String type) {
 		
-		this.ability = new Ability(400,200);
+		this.ability = new Ability(1400,1200);
 		ability.setNpName("全力一擊");
-		
+		this.type = type;
 	}
 	
 	@Override
 	public String getType() {
 		
-		Conversation.output("Saber here!");
-		return this.getClass().getSimpleName();
+		return type;
 		
 	}
 	

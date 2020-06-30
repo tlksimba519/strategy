@@ -14,19 +14,48 @@ import strategy.Quick;
 import utility.Conversation;
 
 public class AdventurerTest {
-	private static void fight(Adventurer you, Adventurer enemy) {
+	
+	String[] adventures = {"factory.SummonSaber", "factory.SummonArcher"};
+	
+	private static void fight(Adventurer attacker, Adventurer defender) {
 		
-		enemy.showAbility().changeHp(-you.attack());
+		if(attacker.getType().equalsIgnoreCase("enemy")) {
+			
+			switch((int)(Math.random() * 4)) {
+				case 0 :
+					attacker.chooseStrategy(new Buster());
+					break;
+				case 1 :
+					attacker.chooseStrategy(new Art());
+					break;
+				case 2 :
+					attacker.chooseStrategy(new Quick());
+					break;
+				case 3 :
+					if(attacker.showAbility().getNp() < 3) {
+						attacker.chooseStrategy(new Art());
+						break;
+					}
+					else {
+						attacker.chooseStrategy(new NoblePhantasms());
+						break;
+					}
+			}
+			
+		}
+		
+		defender.showAbility().changeHp(-attacker.attack());
 		
 	}
+	
 	@Test
-	public void test() throws NumberFormatException, IOException {
+	public void test() throws NumberFormatException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+	
+		SummonSystem summonSystem = new SummonArcher();
+		Adventurer A = summonSystem.summonServent("player");
 		
-		SummonSystem summonsystem = new SummonArcher();
-		Adventurer A = summonsystem.summonServent();
-		
-		summonsystem = new SummonSaber();
-		Adventurer B = summonsystem.summonServent();
+		summonSystem = new SummonSaber();
+		Adventurer B = summonSystem.summonServent("enemy");
 		
 		boolean continueBattle = true;
 		
@@ -51,8 +80,8 @@ public class AdventurerTest {
 					
 				} else {
 					
-					Conversation.output("我方血量 : ", A.showAbility().getHp());
-					Conversation.output("敵方血量 : ", B.showAbility().getHp());
+					Conversation.output("我方血量 : " + A.showAbility().getHp());
+					Conversation.output("敵方血量 : " + B.showAbility().getHp());
 					
 				}
 				
@@ -107,8 +136,9 @@ public class AdventurerTest {
 			
 			Conversation.output("Continue? Y/N");
 			if(Conversation.input().equalsIgnoreCase("Y")) {
-				
-				B = summonsystem.summonServent();
+				Class<?> c = Class.forName(adventures[(int)(Math.random()*2)]);
+				summonSystem = (SummonSystem) c.newInstance();
+				B = summonSystem.summonServent("enemy");
 				A.showAbility().recoverStatus();
 				round = true;
 				roundCount = 1;
@@ -124,8 +154,14 @@ public class AdventurerTest {
 	}
 
 }
+
 class OutOfRangeException extends RuntimeException {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	OutOfRangeException(String s) {
 		
 		super(s);
